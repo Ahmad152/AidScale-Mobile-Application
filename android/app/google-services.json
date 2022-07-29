@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "175085552865",
+    "firebase_url": "https://aid-scale-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "aid-scale",
+    "storage_bucket": "aid-scale.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175085552865:android:bd86d345b534f4f94f23a0",
+        "android_client_info": {
+          "package_name": "com.iot.technion.aid_scale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175085552865-kt5kqpef4g5ipnrd4r67s0pnmifaa6ae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD2SSfgv4oW1Oa3X_leiOnd01Uic6F2Tw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175085552865-kt5kqpef4g5ipnrd4r67s0pnmifaa6ae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
