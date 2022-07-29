@@ -4,7 +4,7 @@ This repository is part of the <a href="https://github.com/Ahmad152/AidScale-Pro
 
 Flutter project that supports AidScale project by adjusting data in the project firebase,
 the app supports in deffernt ways:
-- _reading and showing data from the firebase
+- reading and showing data from the firebase
 - analyzing data and showing statistics
 - updating data that effects the project prosses
 
