@@ -8,6 +8,8 @@ the app supports in deffernt ways:
 - analyzing data and showing statistics
 - updating data that effects the project prosses
 
+<img src="app_pics"/>
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
