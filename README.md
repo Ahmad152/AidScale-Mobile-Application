@@ -2,11 +2,11 @@
 
 This repository is part of the <a href="https://github.com/Ahmad152/AidScale-Project">AidScale project</a>, specifically this repository is dedicated to the mobile/web application code.
 
-Flutter project that suppurt AidScale project by adjasting data in the project firebase,
-the app suppurt in deffernt ways:
+Flutter project that supports AidScale project by adjusting data in the project firebase,
+the app supports in deffernt ways:
 - reading and showing data from the firebase
 - analyzing data and showing statistics
-- updating data that effect the project prosses
+- updating data that effects the project prosses
 
 ## Getting Started
 
