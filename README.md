@@ -8,7 +8,7 @@ the app supports in deffernt ways:
 - analyzing data and showing statistics
 - updating data that effects the project prosses
 
-<img src="app_pics"/>
+<img src="app_pics.jpg"/>
 
 ## Getting Started
 
