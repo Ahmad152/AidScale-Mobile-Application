@@ -2,9 +2,9 @@
 
 Flutter project that suppurt AidScale project by adjasting data in the project firebase,
 the app suppurt in deffernt ways:
-_-reading and showing data from the firebase
-_-analyzing data and showing statistics
-_-updating data that effect the project prosses
+-reading and showing data from the firebase
+-analyzing data and showing statistics
+-updating data that effect the project prosses
 
 ## Getting Started
 
