@@ -1,5 +1,7 @@
 # aid_scale
 
+This repository is part of the <a href="https://github.com/Ahmad152/AidScale-Project">AidScale</a> project, specifically this repository is dedicated to the mobile/web application code.
+
 Flutter project that suppurt AidScale project by adjasting data in the project firebase,
 the app suppurt in deffernt ways:
 - reading and showing data from the firebase
