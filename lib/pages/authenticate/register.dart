@@ -109,7 +109,7 @@ class _RegisterState extends State<Register> {
                 width: 250,
                 decoration: BoxDecoration(
                     color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () async {
                     setState((){ loading = true; });
                     dynamic result = await _auth.registerEmail(_email.text, _password.text);

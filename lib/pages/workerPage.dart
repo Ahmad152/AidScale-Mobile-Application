@@ -152,7 +152,7 @@ class _WorkerState extends State<WorkerPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('TextField in Dialog'),
+            title: Text('update worker'),
             content: StreamProvider<List<Product>?>.value(
               value: DatabaseService().product,
               initialData: [],
@@ -193,9 +193,7 @@ class _WorkerState extends State<WorkerPage> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                color: Colors.blue,
-                textColor: Colors.white,
+              TextButton(
                 child: Text('OK'),
                 onPressed: () {
                   setState(() {

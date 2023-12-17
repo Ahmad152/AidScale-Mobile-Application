@@ -46,8 +46,8 @@ class ProductTile extends StatelessWidget {
               child: Image(image: AssetImage("asset/screw1.png"),fit: BoxFit.fill,),//AssetImage("asset/nail.png"),
               backgroundColor: Colors.transparent,
             ),
-            title: Text(product.name),
-            subtitle: Text('unit weight: ${product.unit}\npack weight: ${product.pack}\nID: ${product.id}'),
+            title: Text(product.id),
+            subtitle: Text('unit weight: ${product.unit}\nunits per pack: ${product.pack}\n${product.name}'),
             trailing: TextButton(
               onPressed: () {
 
@@ -111,11 +111,11 @@ class _ProductDropDownState extends State<ProductDropDown> {
     );
     return DropdownButtonFormField(
       icon: Icon(Icons.arrow_right),
-      value: products.first,
+      value: products.isNotEmpty?products.first:Text('Loading...',style: TextStyle(color: Colors.blueAccent),),
       items: products.map((product) {
 
         return DropdownMenuItem(
-          child: Text('${product.name}'),
+          child: Text('${product.id}'),
           value: product,
         );
       }).toList(),

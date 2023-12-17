@@ -67,7 +67,7 @@ class _LoginDemoState extends State<LoginDemo> {
                       hintText: 'Enter secure password'),
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: (){
                   //TODO FORGOT PASSWORD SCREEN GOES HERE
                 },
@@ -81,7 +81,7 @@ class _LoginDemoState extends State<LoginDemo> {
                 width: 250,
                 decoration: BoxDecoration(
                     color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () async {
                     setState((){ loading = true; });
                     dynamic result = await _auth.signInEmail(_email.text, _password.text);
@@ -100,7 +100,7 @@ class _LoginDemoState extends State<LoginDemo> {
               SizedBox(
                 height: 130,
               ),
-              FlatButton(
+              TextButton(
                 onPressed: (){
                     widget.toggleView();
                 },

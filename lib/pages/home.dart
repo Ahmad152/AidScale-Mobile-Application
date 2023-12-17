@@ -61,7 +61,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               await _auth.signout();
             },
@@ -188,7 +188,7 @@ class _HomeState extends State<Home> {
                     width: 250,
                     decoration: BoxDecoration(
                         color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () async {
                         DatabaseService().updateWorkerData(_name.text, _id.text, _currentLanguage, _currentProduct.name);
                         _name.clear();
@@ -293,7 +293,7 @@ class _HomeState extends State<Home> {
                   width: 250,
                   decoration: BoxDecoration(
                       color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () async {
                       DatabaseService().updateAdminData(_name.text, _id.text, _email.text, _currentAuthority);
                       _name.clear();
@@ -338,17 +338,7 @@ class _HomeState extends State<Home> {
                         child: Image.asset('asset/nail.png')),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, top: 15, bottom: 0),
-                  child: TextField(
-                    controller: _name,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Name',
-                    ),
-                  ),
-                ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
@@ -356,7 +346,7 @@ class _HomeState extends State<Home> {
                     controller: _id,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'ID',
+                      labelText: 'Product name',
                     ),
                   ),
                 ),
@@ -364,10 +354,22 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
                   child: TextField(
+                    controller: _name,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Description',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 0),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
                     controller: _unit,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Unit',
+                      labelText: 'Unit weight',
                     ),
                   ),
                 ),
@@ -375,10 +377,11 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
                   child: TextField(
+                    keyboardType: TextInputType.number,
                     controller: _pack,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Pack',
+                      labelText: 'Units Per Pack',
                     ),
                   ),
                 ),
@@ -391,7 +394,7 @@ class _HomeState extends State<Home> {
                   width: 250,
                   decoration: BoxDecoration(
                       color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () async {
                       DatabaseService().updateProductData(_name.text, _id.text, _unit.text, _pack.text);
                       _name.clear();
@@ -489,7 +492,7 @@ class _HomeState extends State<Home> {
                   width: 250,
                   decoration: BoxDecoration(
                       color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () async {
                       DatabaseService().updateJobData(
                           id:_id.text,

@@ -4,7 +4,9 @@ import 'package:aid_scale/models/worker.dart';
 import 'package:aid_scale/pages/statistics.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class DatabaseService {
+
 
   //Workers Collection
   final CollectionReference workerData = FirebaseFirestore.instance.collection('Workers');
@@ -143,83 +145,233 @@ class DatabaseService {
   }
 
   //make a list of data from a snapshot
-  Future<List<WorkerData>> jobsPerWorker(String date)async{
+  Future<List<WorkerData>> jobsPerWorker(String from,String to)async{
       CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
-      DocumentSnapshot snapshot = await data.doc(date).get();
-      List<dynamic> dat = snapshot['jobs'];
-      // print(dat[2]['Time']);
-      // print(dat.length);
       List<WorkerData> list = [];
-      for(int i=0 ; i < dat.length;i++){
+      int year = int.parse(from.substring(6,10));
+      int month = int.parse(from.substring(3,5));
+      int day = int.parse(from.substring(0,2));
+      DateTime curr = DateTime.utc(year,month,day);
+      year = int.parse(to.substring(6,10));
+      month = int.parse(to.substring(3,5));
+      day = int.parse(to.substring(0,2));
+      DateTime until = DateTime.utc(year,month,day);
+      print(curr);
+      print(until);
+      for(;curr!=until.add(Duration(days: 1));curr = curr.add(Duration(days: 1))) {
+        print(curr);
+        String today = (curr.day < 10 ? "0":"") + curr.day.toString() +
+            (curr.month < 10 ? ".0":".") + curr.month.toString() +
+            "." + curr.year.toString();
+      DocumentSnapshot snapshot = await data.doc(today).get();
+      if(!snapshot.exists){
+        print('$snapshot :=> date does not exists in function jobsPerWorker\n');
+        continue;
+      }
+      List<dynamic> dat = snapshot['jobs'];
+      bool firstInDay = true;
+        for (int i = 0; i < dat.length; i++) {
+          // print(dat[i]);
+          bool flag = false;
+          list.forEach((element) {
+            // print(element.name + ' =? ' + dat[i]['ID']);
+            if (element.name == dat[i]['Name']) {
+              String subTime = dat[i]['SubmitTime'].toString();
+              var times = subTime.split(":");
+              print('hours: ${int.parse(times[0])*3600} min: ${int.parse(times[1])*60} sec: ${int.parse(times[2])}');
+              double workTime = dat[i]['WorkTime'] as double;
+              double startTime = (int.parse(times[0])*3600)+
+                  (int.parse(times[1])*60)+
+                  int.parse(times[2])
+                  - workTime;
+              if(element.endTime<startTime) element.endTime = startTime;
+              if(firstInDay) {
+                element.startTime = startTime;
+                element.endTime = startTime + workTime;
+                firstInDay = false;
+              }
+              print('start time: ${element.startTime} end time: ${element.endTime}');
+              element.jobs++;
+              element.workTime += dat[i]['WorkTime'] as double;
+              element.tolerance += dat[i]['Tolerance'].abs() ;
+              flag = true;
+            }
+          });
+          if (!flag) {
+            String subTime = dat[i]['SubmitTime'].toString();
+            var times = subTime.split(":");
+            double workTime = dat[i]['WorkTime'];
+            double startTime = (int.parse(times[0])*3600)+
+                            (int.parse(times[1])*60)+
+                            int.parse(times[2])
+                            - workTime;
+            list.add(WorkerData(dat[i]['Name'], 1, dat[i]['WorkTime'] as double,
+                startTime,startTime+workTime,0,0,0));
+            firstInDay = false;
+          }
+        }
+        list.forEach((element) {
+          print('start time: ${element.startTime} end time: ${element.endTime}');
+          element.totalTime+=(element.endTime-element.startTime);
+          print('total: ${element.totalTime}');
+          element.workDays++;
+        });
+      }
+      return list;
+    }
+
+  Future<List<WorkerData>> jobsPerProducts(String from, String to)async{
+    CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
+    List<WorkerData> list = [];
+    int year = int.parse(from.substring(6,10));
+    int month = int.parse(from.substring(3,5));
+    int day = int.parse(from.substring(0,2));
+    DateTime curr = DateTime.utc(year,month,day);
+    year = int.parse(to.substring(6,10));
+    month = int.parse(to.substring(3,5));
+    day = int.parse(to.substring(0,2));
+    DateTime until = DateTime.utc(year,month,day);
+    for(;curr!=until.add(Duration(days: 1));curr = curr.add(Duration(days: 1))) {
+      print(curr);
+      String today = (curr.day < 10 ? "0" : "") + curr.day.toString() +
+          (curr.month < 10 ? ".0" : ".") + curr.month.toString() +
+          "." + curr.year.toString();
+      DocumentSnapshot snapshot = await data.doc(today).get();
+      if(!snapshot.exists){
+        print('$snapshot :=> date does not exists in function jobsPerProducts\n');
+        continue;
+      }
+      List<dynamic> dat = snapshot['jobs'];
+      for (int i = 0; i < dat.length; i++) {
         // print(dat[i]);
         bool flag = false;
         list.forEach((element) {
           // print(element.name + ' =? ' + dat[i]['ID']);
-          if(element.name == dat[i]['Name']) {
+          if (element.name == dat[i]['ProductName']) {
+            element.jobs++;
+            element.workTime += dat[i]['Tolerance'] as double;
+            flag = true;
+          }
+        });
+        if (!flag) list.add(WorkerData(
+            dat[i]['ProductName'],
+            1,
+            dat[i]['Tolerance'] as double,
+            0,0,0,0,0));
+      }
+      // print(list);
+    }
+    return list;
+  }
+
+  Future<List<WorkerData>> workerPerProduct(String from,String to, String product,PrimitiveWrapper avg)async {
+    CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
+    List<WorkerData> list = [];
+
+
+
+    int year = int.parse(from.substring(6,10));
+    int month = int.parse(from.substring(3,5));
+    int day = int.parse(from.substring(0,2));
+    DateTime curr = DateTime.utc(year,month,day);
+    year = int.parse(to.substring(6,10));
+    month = int.parse(to.substring(3,5));
+    day = int.parse(to.substring(0,2));
+    DateTime until = DateTime.utc(year,month,day);
+    double sum=0 , num=0;
+    for(;curr!=until.add(Duration(days: 1));curr = curr.add(Duration(days: 1))) {
+      print(curr);
+      String today = (curr.day < 10 ? "0" : "") + curr.day.toString() +
+          (curr.month < 10 ? ".0" : ".") + curr.month.toString() +
+          "." + curr.year.toString();
+
+      DocumentSnapshot snapshot = await data.doc(today).get();
+      if (!snapshot.exists) {
+        print('$snapshot :=> date: $today does not exists in function jobsPerWorker\n');
+        continue;
+      }
+      List<dynamic> dat = snapshot['jobs'];
+      for (int i = 0; i < dat.length; i++) {
+        // print(dat[i]);
+        bool flag = false;
+        list.forEach((element) {
+          // print(element.name + ' =? ' + dat[i]['ID']);
+          if (element.name == dat[i]['Name'] &&
+              product == dat[i]['ProductName']) {
+            sum += dat[i]['Tolerance'];
+            num++;
+            element.totalTime = dat[i]['Tolerance'];
             element.jobs++;
             element.workTime += dat[i]['WorkTime'] as double;
             flag = true;
           }
         });
-        if(!flag) list.add(WorkerData(dat[i]['Name'], 1,dat[i]['WorkTime'] as double));
-      }
-      // print(list);
-      return list;
-    }
-
-  Future<List<WorkerData>> jobsPerProducts(String date)async{
-    CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
-    DocumentSnapshot snapshot = await data.doc(date).get();
-    List<dynamic> dat = snapshot['jobs'];
-    // print(dat[2]['Time']);
-    // print(dat.length);
-    List<WorkerData> list = [];
-    for(int i=0 ; i < dat.length;i++){
-      // print(dat[i]);
-      bool flag = false;
-      list.forEach((element) {
-        // print(element.name + ' =? ' + dat[i]['ID']);
-        if(element.name == dat[i]['ProductName']) {
-          element.jobs++;
-          element.workTime += dat[i]['Tolerance'] as double;
-          flag = true;
+        if (!flag && product == dat[i]['ProductName'])
+          list.add(WorkerData(
+              dat[i]['Name'],
+              1,
+              dat[i]['WorkTime'] as double,
+              0,0,0,0,0));
+        else {
+          print(dat[i]['ProductName']);
+          print(product);
+          print(product == dat[i]['ProductName']);
         }
-      });
-      if(!flag) list.add(WorkerData(dat[i]['ProductName'], 1,dat[i]['Tolerance'] as double));
-    }
-    // print(list);
-    return list;
-  }
-
-  Future<List<WorkerData>> workerPerProduct(String date, String product)async{
-    CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
-    DocumentSnapshot snapshot = await data.doc(date).get();
-    List<dynamic> dat = snapshot['jobs'];
-    // print(dat[2]['Time']);
-    // print(dat.length);
-    List<WorkerData> list = [];
-    for(int i=0 ; i < dat.length;i++){
-      // print(dat[i]);
-      bool flag = false;
-      list.forEach((element) {
-        // print(element.name + ' =? ' + dat[i]['ID']);
-        if(element.name == dat[i]['Name'] && product == dat[i]['ProductName']) {
-          element.jobs++;
-          element.workTime += dat[i]['WorkTime'] as double;
-          flag = true;
-        }
-      });
-      if(!flag && product == dat[i]['ProductName']) list.add(WorkerData(dat[i]['Name'], 1,dat[i]['WorkTime'] as double));
-      else {
-        print(dat[i]['ProductName']);
-        print(product);
-        print(product == dat[i]['ProductName']);
       }
     }
     // print(list);
+    avg.value = sum/num;
     return list;
   }
 
+
+  Future<List<List<dynamic>>> getRawData(String from,String to)async{
+    CollectionReference data = FirebaseFirestore.instance.collection('Jobs');
+    List<List<dynamic>> list = <List<dynamic>>[];
+    list.add([
+      "ID",
+      "Name",
+      "ProductName",
+      "SubmitTime",
+      "Tolerance [%]",
+      "Weight [g]",
+      "WorkTime [sec]"
+    ]);
+    int year = int.parse(from.substring(6,10));
+    int month = int.parse(from.substring(3,5));
+    int day = int.parse(from.substring(0,2));
+    DateTime curr = DateTime.utc(year,month,day);
+    year = int.parse(to.substring(6,10));
+    month = int.parse(to.substring(3,5));
+    day = int.parse(to.substring(0,2));
+    DateTime until = DateTime.utc(year,month,day);
+    print(curr);
+    print(until);
+    for(;curr!=until.add(Duration(days: 1));curr = curr.add(Duration(days: 1))) {
+      print(curr);
+      String today = (curr.day < 10 ? "0":"") + curr.day.toString() +
+          (curr.month < 10 ? ".0":".") + curr.month.toString() +
+          "." + curr.year.toString();
+      DocumentSnapshot snapshot = await data.doc(today).get();
+      if(!snapshot.exists){
+        print('$snapshot :=> date does not exists in function jobsPerWorker\n');
+        continue;
+      }
+      List<dynamic> dat = snapshot['jobs'];
+      for (int i = 0; i < dat.length; i++) {
+        List<dynamic> row = <dynamic>[];
+        row.add(dat[i]['ID']);
+        row.add(dat[i]['Name']);
+        row.add(dat[i]['ProductName']);
+        row.add(dat[i]['SubmitTime']);
+        row.add(dat[i]['Tolerance']);
+        row.add(dat[i]['Weight']);
+        row.add(dat[i]['WorkTime']);
+        list.add(row);
+      }
+    }
+    return list;
+  }
   // Future<List<Data>> productListFromSnapshot()async{
   //   CollectionReference data = FirebaseFirestore.instance.collection('Products');
   //   DocumentSnapshot snapshot = await data.doc().get();

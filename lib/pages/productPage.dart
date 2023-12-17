@@ -35,7 +35,7 @@ class _ProductState extends State<ProductPage> {
                 );
           }, icon: Icon(Icons.build , color: Colors.white)),
         ],
-        title: Text('Worker'),
+        title: Text('Product'),
         centerTitle: true,
         backgroundColor: Colors.blueAccent[100],
       ),
@@ -113,7 +113,7 @@ class _ProductState extends State<ProductPage> {
                 Row(
                   children: <Widget>[
                     //SizedBox(width: 10.0,),
-                    Text("Pack weight",style: TextStyle(
+                    Text("units per pack",style: TextStyle(
                       color: Colors.blueAccent[100],
                       letterSpacing: 2.0,
                     ),
@@ -150,7 +150,7 @@ class _ProductState extends State<ProductPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('TextField in Dialog'),
+            title: Text('update product'),
             content: Container(
               height: 200,
               child: Column(
@@ -171,7 +171,7 @@ class _ProductState extends State<ProductPage> {
                         keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          product.unit = value+"g";
+                          product.unit = value;
                         });
                       },
                       controller: _unit,
@@ -184,7 +184,7 @@ class _ProductState extends State<ProductPage> {
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          product.pack = value+"g";
+                          product.pack = value;
                         });
                       },
                       controller: _pack,
@@ -195,9 +195,7 @@ class _ProductState extends State<ProductPage> {
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                color: Colors.blue,
-                textColor: Colors.white,
+              TextButton(
                 child: Text('OK'),
                 onPressed: () {
                   setState(() {
